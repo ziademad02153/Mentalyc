@@ -15,9 +15,20 @@ import {
 } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import MenuIcon from '@mui/icons-material/Menu';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ClientsPage from './pages/ClientsPage/ClientsPage';
 
 const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
   palette: {
     primary: {
       main: '#8B1D94',
@@ -45,24 +56,32 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '100vh',
+      }}>
         <AppBar 
           position="static" 
-          color="transparent" 
-          elevation={0}
           sx={{ 
+            backgroundColor: 'white',
+            boxShadow: 'none',
             borderBottom: '1px solid #E0E0E0',
-            backgroundColor: 'white'
           }}
         >
-          <Toolbar>
+          <Toolbar sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            px: { xs: 2, sm: 4 },
+            py: 1,
+          }}>
             {/* Logo */}
             <Box
               component="div"
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                marginRight: 4,
+                marginRight: { xs: 1, sm: 4 },
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -97,155 +116,97 @@ const App = () => {
               </Box>
             </Box>
 
-            {/* Navigation Links */}
-            <Button 
-              color="inherit" 
-              sx={{ 
-                mr: 2,
-                ...(currentPage === 'notes' && {
-                  color: theme.palette.primary.main,
-                })
-              }}
-              onClick={() => setCurrentPage('notes')}
-            >
-              New notes
-            </Button>
-            <Button 
-              color="inherit" 
-              sx={{ 
-                mr: 2,
-                ...(currentPage === 'clients' && {
-                  color: theme.palette.primary.main,
-                  position: 'relative',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '2px',
-                    background: 'linear-gradient(45deg, #8B1D94 30%, #A020F0 90%)',
-                  }
-                })
-              }}
-              onClick={() => setCurrentPage('clients')}
-            >
-              Clients
-            </Button>
-            <Button 
-              color="inherit" 
-              sx={{ 
-                mr: 2,
-                ...(currentPage === 'clinicians' && {
-                  color: theme.palette.primary.main,
-                })
-              }}
-              onClick={() => setCurrentPage('clinicians')}
-            >
-              Clinicians
-            </Button>
-            <Button 
-              color="inherit" 
-              sx={{ 
-                mr: 2,
-                ...(currentPage === 'templates' && {
-                  color: theme.palette.primary.main,
-                })
-              }}
-              onClick={() => setCurrentPage('templates')}
-            >
-              Templates
-            </Button>
-            
-            <Box sx={{ flexGrow: 1 }} />
-
-            {/* Right Side Items */}
-            <Button 
-              color="inherit" 
-              sx={{ 
-                mr: 2,
-                background: 'linear-gradient(45deg, #8B1D94 30%, #A020F0 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontWeight: 500,
-              }}
-              onClick={() => window.open('https://mentalyc.com/earn', '_blank')}
-            >
-              Earn $80
-            </Button>
-            
-            <Badge 
-              badgeContent={notesCount} 
-              color="primary"
-              sx={{ 
-                mr: 2,
-                '& .MuiBadge-badge': {
-                  background: 'linear-gradient(45deg, #8B1D94 30%, #A020F0 90%)',
-                }
-              }}
-            >
-              <Typography color="textSecondary">notes left</Typography>
-            </Badge>
-
-            <Button
-              variant="contained"
-              sx={{
-                mr: 2,
-                background: 'linear-gradient(45deg, #8B1D94 30%, #A020F0 90%)',
-                boxShadow: '0 3px 5px 2px rgba(139, 29, 148, 0.2)',
-                '&:hover': {
-                  background: 'linear-gradient(45deg, #7B1A84 30%, #8B1D94 90%)',
-                },
-              }}
-              onClick={() => window.open('https://mentalyc.com/super', '_blank')}
-            >
-              Become SUPER
-            </Button>
-
-            <IconButton 
-              sx={{ p: 0, mr: 2 }}
-              onClick={handleProfileClick}
-            >
-              <Avatar sx={{ 
-                bgcolor: '#E3F2FD', 
-                color: '#1976D2',
-                width: 32,
-                height: 32,
-                fontSize: '0.9rem',
+            {/* Navigation */}
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              gap: { xs: 1, sm: 2, md: 4 },
+              flex: 1,
+              justifyContent: { xs: 'flex-end', md: 'space-between' },
+            }}>
+              <Box sx={{ 
+                display: { xs: 'none', md: 'flex' },
+                gap: 4,
               }}>
-                M
-                <KeyboardArrowDownIcon sx={{ fontSize: '1rem', ml: -0.5 }} />
-              </Avatar>
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-              onClick={handleClose}
-            >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
-            </Menu>
+                <Button color="inherit" sx={{ color: '#1C1B1F' }}>New notes</Button>
+                <Button color="inherit" sx={{ color: '#8B1D94' }}>Clients</Button>
+                <Button color="inherit" sx={{ color: '#1C1B1F' }}>Clinicians</Button>
+                <Button color="inherit" sx={{ color: '#1C1B1F' }}>Templates</Button>
+              </Box>
 
-            <Tooltip title="Help">
-              <IconButton 
-                sx={{ 
-                  color: theme.palette.primary.main,
-                  '&:hover': {
-                    color: theme.palette.primary.light,
-                  }
-                }}
-                onClick={() => window.open('https://mentalyc.com/help', '_blank')}
-              >
-                <HelpOutlineIcon />
-              </IconButton>
-            </Tooltip>
+              {/* Mobile Menu */}
+              <Box sx={{ 
+                display: { xs: 'block', md: 'none' }
+              }}>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  sx={{ color: '#1C1B1F' }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Box>
+
+              {/* Right Section */}
+              <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                gap: { xs: 1, sm: 2 },
+              }}>
+                <Button 
+                  variant="text" 
+                  sx={{ 
+                    color: '#1C1B1F',
+                    display: { xs: 'none', sm: 'flex' },
+                  }}
+                >
+                  Earn $80
+                </Button>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  gap: 1,
+                }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: '#49454F',
+                      display: { xs: 'none', sm: 'block' },
+                    }}
+                  >
+                    12 notes left
+                  </Typography>
+                  <AccessTimeIcon sx={{ color: '#49454F', fontSize: '1rem' }} />
+                </Box>
+                <Button 
+                  variant="contained" 
+                  sx={{ 
+                    backgroundColor: '#8B1D94',
+                    '&:hover': {
+                      backgroundColor: '#7B1A84',
+                    },
+                    px: { xs: 2, sm: 3 },
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  }}
+                >
+                  Become SUPER
+                </Button>
+                <Avatar sx={{ bgcolor: '#E8DEF8', color: '#1C1B1F' }}>M</Avatar>
+              </Box>
+            </Box>
           </Toolbar>
         </AppBar>
 
-        {currentPage === 'clients' && <ClientsPage />}
-        {/* Add other pages here when they're created */}
+        <Box component="main" sx={{ 
+          flexGrow: 1,
+          px: { xs: 2, sm: 4 },
+          py: { xs: 2, sm: 3 },
+          backgroundColor: '#F6F5F7',
+        }}>
+          {currentPage === 'clients' && <ClientsPage />}
+        </Box>
       </Box>
     </ThemeProvider>
   );

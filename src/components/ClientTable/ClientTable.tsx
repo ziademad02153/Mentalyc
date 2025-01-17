@@ -9,175 +9,169 @@ import {
   Checkbox,
   Paper,
   Box,
-  styled,
+  Chip,
 } from '@mui/material';
-import { Client } from '../../types';
+
+interface Client {
+  id: string;
+  name: string;
+  clinician: string;
+  type: string;
+  lastSession: string;
+  unsavedNotes: number;
+  isHighRisk?: boolean;
+}
 
 interface ClientTableProps {
   clients: Client[];
   selectedClients: string[];
   onSelectClient: (clientId: string) => void;
-  onSelectAll: (checked: boolean) => void;
+  onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  border: 'none',
-  padding: '12px 16px',
-  fontSize: '0.875rem',
-  color: '#1A1A1A',
-  backgroundColor: '#FFFFFF',
-  '&.MuiTableCell-head': {
-    backgroundColor: '#FAFAFA',
-    color: '#666666',
-    fontWeight: 500,
-    borderTop: 'none',
-    borderBottom: '1px solid #E0E0E0',
-    padding: '16px',
-  },
-  '&.checkbox-cell': {
-    width: '48px',
-    padding: '12px 8px 12px 16px',
-  },
-  '&.client-type-cell': {
-    minWidth: '100px',
-  },
-  '&.unsaved-notes-cell': {
-    width: '120px',
-    textAlign: 'center',
-  },
-}));
+const getTypeColor = (type: string): string => {
+  switch (type) {
+    case 'Individual':
+      return '#E8E0FF';
+    case 'Couple':
+      return '#E0F7FF';
+    case 'Family':
+      return '#FFE0E0';
+    case 'Child':
+      return '#E0FFE9';
+    case 'Group':
+      return '#FFF6E0';
+    default:
+      return '#E8E0FF';
+  }
+};
 
-const StyledTableRow = styled(TableRow)({
-  backgroundColor: '#FFFFFF',
-  boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-  '& td': {
-    backgroundColor: '#FFFFFF',
-    '&:first-of-type': {
-      borderTopLeftRadius: '8px',
-      borderBottomLeftRadius: '8px',
-    },
-    '&:last-of-type': {
-      borderTopRightRadius: '8px',
-      borderBottomRightRadius: '8px',
-    },
-  },
-  '&:hover': {
-    '& td': {
-      backgroundColor: '#FAFAFA',
-    },
-  },
-  '&.Mui-selected': {
-    '& td': {
-      backgroundColor: 'rgba(139, 29, 148, 0.04) !important',
-    },
-  },
-  '&.Mui-selected:hover': {
-    '& td': {
-      backgroundColor: 'rgba(139, 29, 148, 0.08) !important',
-    },
-  },
-});
-
-const StyledTableContainer = styled(TableContainer)({
-  borderRadius: '12px',
-  border: '1px solid #E0E0E0',
-  '& .MuiTable-root': {
-    borderCollapse: 'separate',
-    borderSpacing: '0 8px',
-  },
-});
-
-const StyledCheckbox = styled(Checkbox)({
-  color: '#CCCCCC',
-  padding: 0,
-  '&.Mui-checked': {
-    color: '#8B1D94',
-  },
-  '&.MuiCheckbox-indeterminate': {
-    color: '#8B1D94',
-  },
-});
-
-const ClientTypeChip = styled(Box)<{ clientType: string }>(({ clientType }) => {
-  const colors: { [key: string]: { bg: string; color: string } } = {
-    Individual: { bg: '#E8E0FF', color: '#6B4DE6' },
-    Couple: { bg: '#E0F7FF', color: '#4DB5E6' },
-    Family: { bg: '#FFE0E0', color: '#E64D4D' },
-    Child: { bg: '#E0FFE9', color: '#4DE668' },
-    Group: { bg: '#FFF6E0', color: '#E6B44D' },
-  };
-
-  const style = colors[clientType] || colors.Individual;
-
-  return {
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    backgroundColor: style.bg,
-    color: style.color,
-    height: '24px',
-  };
-});
-
-const ClientTable: React.FC<ClientTableProps> = ({
-  clients,
-  selectedClients,
-  onSelectClient,
-  onSelectAll,
-}) => {
-  const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSelectAll(event.target.checked);
-  };
-
+function ClientTable({ clients, selectedClients, onSelectClient, onSelectAll }: ClientTableProps) {
   return (
-    <StyledTableContainer component={Paper} elevation={0}>
-      <Table>
+    <TableContainer 
+      component={Paper} 
+      elevation={0}
+      sx={{ 
+        borderRadius: '12px',
+        overflow: 'hidden',
+      }}
+    >
+      <Table 
+        sx={{ 
+          minWidth: { xs: '100%', sm: 650 },
+        }}
+      >
         <TableHead>
-          <TableRow>
-            <StyledTableCell padding="checkbox" className="checkbox-cell">
-              <StyledCheckbox
+          <TableRow
+            sx={{
+              backgroundColor: '#F6F5F7',
+              '& th': {
+                color: '#49454F',
+                fontWeight: 500,
+                fontSize: '0.875rem',
+                borderBottom: 'none',
+                py: { xs: 1.5, sm: 2 },
+                px: { xs: 1, sm: 2 },
+                whiteSpace: 'nowrap',
+              },
+            }}
+          >
+            <TableCell padding="checkbox">
+              <Checkbox
                 indeterminate={selectedClients.length > 0 && selectedClients.length < clients.length}
-                checked={clients.length > 0 && selectedClients.length === clients.length}
-                onChange={handleSelectAll}
+                checked={selectedClients.length === clients.length && clients.length > 0}
+                onChange={onSelectAll}
+                sx={{
+                  color: '#79747E',
+                  '&.Mui-checked': {
+                    color: '#8B1D94',
+                  },
+                  '&.MuiCheckbox-indeterminate': {
+                    color: '#8B1D94',
+                  },
+                }}
               />
-            </StyledTableCell>
-            <StyledTableCell>Client name</StyledTableCell>
-            <StyledTableCell>Clinician name</StyledTableCell>
-            <StyledTableCell className="client-type-cell">Client type</StyledTableCell>
-            <StyledTableCell>Last session</StyledTableCell>
-            <StyledTableCell className="unsaved-notes-cell">Unsaved notes</StyledTableCell>
+            </TableCell>
+            <TableCell>Client name</TableCell>
+            <TableCell>Clinician name</TableCell>
+            <TableCell>Client type</TableCell>
+            <TableCell>Last session</TableCell>
+            <TableCell align="center">Unsaved notes</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {clients.map((client) => (
-            <StyledTableRow
+            <TableRow
               key={client.id}
-              selected={selectedClients.includes(client.id)}
+              hover
+              sx={{
+                '&:last-child td, &:last-child th': { border: 0 },
+                '& td': {
+                  py: { xs: 1.5, sm: 2 },
+                  px: { xs: 1, sm: 2 },
+                  fontSize: { xs: '0.875rem', sm: '1rem' },
+                  borderBottom: '1px solid #E0E0E0',
+                },
+                '&:hover': {
+                  backgroundColor: '#F6F5F7',
+                },
+              }}
             >
-              <StyledTableCell padding="checkbox" className="checkbox-cell">
-                <StyledCheckbox
+              <TableCell padding="checkbox">
+                <Checkbox
                   checked={selectedClients.includes(client.id)}
                   onChange={() => onSelectClient(client.id)}
+                  sx={{
+                    color: '#79747E',
+                    '&.Mui-checked': {
+                      color: '#8B1D94',
+                    },
+                  }}
                 />
-              </StyledTableCell>
-              <StyledTableCell>{client.name}</StyledTableCell>
-              <StyledTableCell>{client.clinicianName}</StyledTableCell>
-              <StyledTableCell className="client-type-cell">
-                <ClientTypeChip clientType={client.clientType}>
-                  {client.clientType}
-                </ClientTypeChip>
-              </StyledTableCell>
-              <StyledTableCell>{client.lastSession}</StyledTableCell>
-              <StyledTableCell className="unsaved-notes-cell">{client.unsavedNotes}</StyledTableCell>
-            </StyledTableRow>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                }}>
+                  {client.name}
+                  {client.isHighRisk && (
+                    <Chip
+                      label="High Risk"
+                      size="small"
+                      sx={{
+                        backgroundColor: '#FFE9E9',
+                        color: '#B3261E',
+                        fontSize: '0.75rem',
+                        height: '24px',
+                        display: { xs: 'none', sm: 'flex' },
+                      }}
+                    />
+                  )}
+                </Box>
+              </TableCell>
+              <TableCell>{client.clinician}</TableCell>
+              <TableCell>
+                <Chip
+                  label={client.type}
+                  size="small"
+                  sx={{
+                    backgroundColor: getTypeColor(client.type),
+                    color: '#1C1B1F',
+                    fontSize: '0.75rem',
+                    height: '24px',
+                  }}
+                />
+              </TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap' }}>{client.lastSession}</TableCell>
+              <TableCell align="center">{client.unsavedNotes}</TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>
-    </StyledTableContainer>
+    </TableContainer>
   );
-};
+}
 
 export default ClientTable;

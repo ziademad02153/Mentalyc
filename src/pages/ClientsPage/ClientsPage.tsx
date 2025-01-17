@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Tab, Tabs, TextField, MenuItem, Button, styled } from '@mui/material';
+import { Box, Tab, Tabs, TextField, MenuItem, Button, styled, Typography, Paper, FormControl, InputLabel, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import ClientTable from '../../components/ClientTable/ClientTable';
 import ClientForm from '../../components/ClientForm/ClientForm';
@@ -164,84 +164,160 @@ const ClientsPage = () => {
     <StyledContainer>
       <ContentBox>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <TabsBox>
-            <Tabs 
-              value={selectedTab} 
-              onChange={handleTabChange}
-              sx={{
-                '& .MuiTabs-indicator': {
-                  backgroundColor: '#8B1D94',
-                },
-                '& .MuiTab-root': {
-                  textTransform: 'none',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: '#666666',
-                  '&.Mui-selected': {
-                    color: '#8B1D94',
-                  },
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              mb: { xs: 2, sm: 3 },
+              fontSize: { xs: '1.25rem', sm: '1.5rem' },
+            }}
+          >
+            Clients
+          </Typography>
+        </Box>
+
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: { xs: 2, sm: 3 },
+            mb: { xs: 2, sm: 3 },
+            borderRadius: '12px',
+          }}
+        >
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 2, sm: 3 },
+            mb: { xs: 2, sm: 3 },
+          }}>
+            <FormControl 
+              fullWidth 
+              sx={{ 
+                flex: { sm: 1 },
+                minWidth: { sm: '200px' },
+              }}
+            >
+              <InputLabel>Select client</InputLabel>
+              <Select
+                value={selectedClientFilter}
+                label="Select client"
+                onChange={(e) => setSelectedClientFilter(e.target.value)}
+                sx={{ borderRadius: '8px' }}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {mockClients.map(client => (
+                  <MenuItem key={client.id} value={client.name}>
+                    {client.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl 
+              fullWidth 
+              sx={{ 
+                flex: { sm: 1 },
+                minWidth: { sm: '200px' },
+              }}
+            >
+              <InputLabel>Select clinician</InputLabel>
+              <Select
+                value={selectedClinicianFilter}
+                label="Select clinician"
+                onChange={(e) => setSelectedClinicianFilter(e.target.value)}
+                sx={{ borderRadius: '8px' }}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {clinicians.map(clinician => (
+                  <MenuItem key={clinician} value={clinician}>
+                    {clinician}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button 
+              variant="outlined" 
+              startIcon={<AddIcon />}
+              onClick={() => setIsFormOpen(true)}
+              sx={{ 
+                minWidth: { xs: '100%', sm: 'auto' },
+                height: '56px',
+                borderRadius: '8px',
+                borderColor: '#79747E',
+                color: '#1C1B1F',
+                '&:hover': {
+                  borderColor: '#1C1B1F',
+                  backgroundColor: 'rgba(28, 27, 31, 0.04)',
                 },
               }}
             >
-              <Tab label={`In treatment (${mockClients.length})`} />
-              <Tab label="Deactivated (4)" />
-            </Tabs>
-          </TabsBox>
-        </Box>
+              Add new client
+            </Button>
+          </Box>
 
-        <FilterBox>
-          <StyledTextField
-            select
-            label="Client name"
-            value={selectedClientFilter}
-            onChange={(e) => setSelectedClientFilter(e.target.value)}
-            sx={{ width: 240 }}
-            size="small"
-          >
-            <MenuItem value="">All clients</MenuItem>
-            {mockClients.map(client => (
-              <MenuItem key={client.id} value={client.name}>
-                {client.name}
-              </MenuItem>
-            ))}
-          </StyledTextField>
-          <StyledTextField
-            select
-            label="Clinician name"
-            value={selectedClinicianFilter}
-            onChange={(e) => setSelectedClinicianFilter(e.target.value)}
-            sx={{ width: 240 }}
-            size="small"
-          >
-            <MenuItem value="">All clinicians</MenuItem>
-            {clinicians.map(clinician => (
-              <MenuItem key={clinician} value={clinician}>
-                {clinician}
-              </MenuItem>
-            ))}
-          </StyledTextField>
-          <Box sx={{ flexGrow: 1 }} />
-          <AddButton
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={() => setIsFormOpen(true)}
-          >
-            Add new client
-          </AddButton>
-        </FilterBox>
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 2, sm: 0 },
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              gap: 2,
+              width: { xs: '100%', sm: 'auto' },
+            }}>
+              <Button 
+                variant={selectedTab === 0 ? 'contained' : 'text'}
+                onClick={() => setSelectedTab(0)}
+                sx={{ 
+                  flex: { xs: 1, sm: 'none' },
+                  minWidth: { sm: '120px' },
+                  color: selectedTab === 0 ? 'white' : '#49454F',
+                  backgroundColor: selectedTab === 0 ? '#8B1D94' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: selectedTab === 0 ? '#7B1A84' : 'rgba(28, 27, 31, 0.04)',
+                  },
+                }}
+              >
+                In treatment ({mockClients.length})
+              </Button>
+              <Button 
+                variant={selectedTab === 1 ? 'contained' : 'text'}
+                onClick={() => setSelectedTab(1)}
+                sx={{ 
+                  flex: { xs: 1, sm: 'none' },
+                  minWidth: { sm: '120px' },
+                  color: selectedTab === 1 ? 'white' : '#49454F',
+                  backgroundColor: selectedTab === 1 ? '#8B1D94' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: selectedTab === 1 ? '#7B1A84' : 'rgba(28, 27, 31, 0.04)',
+                  },
+                }}
+              >
+                Deactivated (4)
+              </Button>
+            </Box>
+          </Box>
 
-        <ClientTable
-          clients={filteredClients}
-          selectedClients={selectedClients}
-          onSelectClient={handleSelectClient}
-          onSelectAll={handleSelectAll}
-        />
+          <ClientTable 
+            clients={filteredClients}
+            selectedClients={selectedClients}
+            onSelectClient={handleSelectClient}
+            onSelectAll={handleSelectAll}
+          />
 
-        <ClientForm
-          open={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          onSubmit={handleAddClient}
-        />
+          <ClientForm
+            open={isFormOpen}
+            onClose={() => setIsFormOpen(false)}
+            onSubmit={handleAddClient}
+          />
+        </Paper>
       </ContentBox>
     </StyledContainer>
   );
