@@ -99,9 +99,3 @@ The application follows a consistent design system:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Team
-
-- [Your Name] - Developer
-- [Team Member] - Designer
-- [Team Member] - Project Manager
